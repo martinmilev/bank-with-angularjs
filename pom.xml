@@ -8,6 +8,104 @@
   <artifactId>bank</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>com.clouway.bank.BankBootstrap</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>jarjar-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jarjar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>org.eclipse.jetty:jetty-server</include>
+                <include>org.eclipse.jetty:jetty-servlet</include>
+                <include>org.eclipse.jetty:jetty-webapp</include>
+                <include>org.eclipse.jetty:jetty-util</include>
+                <include>org.eclipse.jetty:jetty-http</include>
+                <include>org.eclipse.jetty:jetty-xml</include>
+                <include>org.eclipse.jetty:jetty-io</include>
+                <include>org.eclipse.jetty:jetty-security</include>
+                <include>org.eclipse.jetty:jetty-continuation</include>
+                <include>javax.servlet:javax.servlet-api</include>
+                <include>javax.inject:javax.inject</include>
+                <include>javax.validation:validation-api</include>
+                <include>com.google.guava:guava</include>
+                <include>com.google.inject:guice</include>
+                <include>com.google.inject.extensions:guice-servlet</include>
+                <include>com.google.inject.extensions:guice-multibindings</include>
+                <include>com.google.sitebricks:sitebricks</include>
+                <include>com.google.sitebricks:sitebricks-annotations</include>
+                <include>com.google.sitebricks:sitebricks-converter</include>
+                <include>aopalliance:aopalliance</include>
+                <include>org.mvel:mvel2</include>
+                <include>org.jsoup:jsoup</include>
+              </includes>
+              <rules>
+                <rule>
+                  <pattern>org.eclipse.jetty.*</pattern>
+                  <result>com.clouway.bank.internal.jetty.@1</result>
+                </rule>
+                <rule>
+                  <pattern>javax.servlet.*</pattern>
+                  <result>com.clouway.bank.internal.javax.@1</result>
+                </rule>
+                <rule>
+                  <pattern>com.google.guava.*</pattern>
+                  <result>com.clouway.bank.internal.guava.@1</result>
+                </rule>
+                <rule>
+                  <pattern>com.google.inject.*</pattern>
+                  <result>com.clouway.bank.internal.guice.@1</result>
+                </rule>
+                <rule>
+                  <pattern>com.google.sitebricks.*</pattern>
+                  <result>com.clouway.bank.internal.sitebricks.@1</result>
+                </rule>
+                <rule>
+                  <pattern>org.mongodb.*</pattern>
+                  <result>com.clouway.bank.internal.mongodb.@1</result>
+                </rule>
+                <keep>
+                  <pattern>com.clouway.bank.**</pattern>
+                </keep>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- HTTP Server Dependencies -->
     <dependency>
@@ -25,6 +123,42 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
+      <version>8.1.8.v20121106</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>8.1.8.v20121106</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>8.1.8.v20121106</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http</artifactId>
+      <version>8.1.8.v20121106</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+      <version>8.1.8.v20121106</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+      <version>8.1.8.v20121106</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-continuation</artifactId>
       <version>8.1.8.v20121106</version>
     </dependency>
 
@@ -54,11 +188,47 @@
       <version>3.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+      <version>1.0</version>
+    </dependency>
+
     <!-- Web Related Stuff -->
     <dependency>
       <groupId>com.google.sitebricks</groupId>
       <artifactId>sitebricks</artifactId>
       <version>0.8.11</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.sitebricks</groupId>
+      <artifactId>sitebricks-annotations</artifactId>
+      <version>0.8.11</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.sitebricks</groupId>
+      <artifactId>sitebricks-converter</artifactId>
+      <version>0.8.11</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel</artifactId>
+      <version>2.0M2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>1.0.0.GA</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.8.1</version>
     </dependency>
 
     <!-- Persistence Libraries -->
@@ -82,6 +252,7 @@
       <version>1.3</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.jmock</groupId>
       <artifactId>jmock</artifactId>
@@ -98,18 +269,5 @@
 
 
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
