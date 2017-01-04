@@ -11,6 +11,5 @@ public class BankBootstrap {
     jetty.start();
 
     System.out.println(String.format("Bank is up and running on: %d", httpPort));
-
   }
 }

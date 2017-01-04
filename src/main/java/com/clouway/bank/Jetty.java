@@ -1,21 +1,19 @@
 package com.clouway.bank;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.servlet.GuiceFilter;
+import com.google.inject.servlet.GuiceServletContextListener;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 /**
  * @author Miroslav Genov (miroslav.genov@clouway.com)
@@ -30,24 +28,13 @@ public class Jetty {
    public void start() {
      ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
      servletContext.setContextPath("/");
+     servletContext.addServlet(DefaultServlet.class, "/");
+     servletContext.addFilter(GuiceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.INCLUDE));
 
-     servletContext.addEventListener(new ServletContextListener() {
-
-       public void contextInitialized(ServletContextEvent servletContextEvent) {
-         ServletContext servletContext = servletContextEvent.getServletContext();
-
-         servletContext.addServlet("homeServlet", new HttpServlet() {
-           @Override
-           protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-             PrintWriter writer = resp.getWriter();
-             writer.println("Hello!");
-             writer.flush();
-           }
-         }).addMapping("/");
-       }
-
-       public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
+     servletContext.addEventListener(new GuiceServletContextListener() {
+       @Override
+       protected Injector getInjector() {
+         return Guice.createInjector(new BankModule());
        }
      });
 
