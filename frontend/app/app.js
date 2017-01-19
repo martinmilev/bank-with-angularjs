@@ -15,6 +15,22 @@ app.config(function($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 });
 
+app.controller('HomePageCtrl', function($scope, $http) {
+  $http.get("/v1/")
+    .then(function(response) {
+    $scope.account = response.data;
+  });
+
+  $scope.operation = {};
+  $scope.submitForm = function() {
+    $http({
+      method: 'POST',
+        url: '/v1/operation',
+      data: $scope.operation
+    });
+  }
+});
+
 app.controller('TransactionsHistoryCtrl', function($scope, $http) {
   // an empty list of transactions should be displayed 
   // before loading of the history
