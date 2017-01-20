@@ -1,5 +1,4 @@
-package com.clouway.bank.Presistence;
-
+package com.clouway.bank.persistence;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Provider;

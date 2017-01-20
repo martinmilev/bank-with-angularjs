@@ -36,7 +36,7 @@ public class HomePageServiceTest {
       will(returnValue(possibleAccount));
     }});
 
-    Reply<?> reply = homePageService.getAccount(request);
+    Reply<?> reply = homePageService.getAccount();
     Account expected = possibleAccount.get();
 
     assertThat(reply, isOk());

@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.google.sitebricks.At;
 import com.google.sitebricks.client.transport.Json;
 import com.google.sitebricks.headless.Reply;
-import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.headless.Service;
 import com.google.sitebricks.http.Get;
 
@@ -23,10 +22,8 @@ public class HomePageService {
   }
 
   @Get
-  public Reply<?> operation(Request request) {
-    // logged user
-    UserID id = new UserID();
-    return Reply.with(accountRepository.getById(id.id).get()).as(Json.class);
+  public Reply<?> getAccount() {
+    return Reply.with(accountRepository.getById(new UserID().id).get()).as(Json.class);
   }
 
   private static class UserID {

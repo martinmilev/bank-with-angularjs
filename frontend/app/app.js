@@ -26,12 +26,11 @@ app.controller('TransactionsHistoryCtrl', function($scope, $http) {
 });
 
 app.controller('HomePageCtrl', function($scope, $http) {
-  var balance;
+  $scope.account = {};
   $http.get("/v1/")
-          .then(function(response) {
-            $scope.account = response.data;
-            balance = $scope.account.balance;
-          });
+    .then(function(response) {
+      $scope.account = response.data;
+  });
 
   $scope.operation = {};
   // var value = $scope.operation.amount;
@@ -40,6 +39,7 @@ app.controller('HomePageCtrl', function($scope, $http) {
 
   $scope.submitForm = function() {
     $http.post("/v1/operation", $scope.operation);
+  }
     // if (type == "deposit") {
     //   amount = balance + value;
     // }
@@ -47,7 +47,7 @@ app.controller('HomePageCtrl', function($scope, $http) {
     //   amount = balance - value;
     // }
     // $http.post("/v1/operation", {type : type, amount : amount});
-  };
+  // };
 });
 
 // app.controller('HomePageCtrl', function($scope, $http) {

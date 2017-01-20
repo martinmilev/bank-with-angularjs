@@ -50,7 +50,7 @@ public class PersistentAccountRepository implements AccountRepository {
 
   @Override
   public void update(String id, Double amount) {
-    MongoCollection<Document> collection = db.get().getCollection("accounts");
-    collection.findOneAndUpdate(new Document("_id", new ObjectId(id)), new Document("$set", new Document("balance", amount)));
+    db.get().getCollection("accounts").
+            findOneAndUpdate(new Document("_id", new ObjectId(id)), new Document("$set", new Document("balance", amount)));
   }
 }
