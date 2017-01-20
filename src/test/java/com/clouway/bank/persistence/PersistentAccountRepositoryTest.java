@@ -1,6 +1,7 @@
-package com.clouway.bank.Presistence;
+package com.clouway.bank.persistence;
 
 import com.clouway.bank.core.Account;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -14,6 +15,11 @@ import static org.hamcrest.core.Is.is;
  */
 public class PersistentAccountRepositoryTest {
   private PersistentAccountRepository accountRepository = new PersistentAccountRepository(new DBProvider());
+
+  @Before
+  public void setUp() throws Exception {
+    new DBProvider().get().getCollection("accounts").drop();
+  }
 
   @Test
   public void happyPath() throws Exception {
@@ -32,8 +38,8 @@ public class PersistentAccountRepositoryTest {
 
   @Test
   public void updateAccountBalance() throws Exception {
-    Account account = accountRepository.register("A", 10D);
-    Account expected = new Account(account.id, "A", 5D);
+    Account account = accountRepository.register("A", 10d);
+    Double expected = 5d;
     accountRepository.update(account.id, expected);
     Double actual = accountRepository.getById(account.id).get().balance;
     assertThat(actual, is(expected));

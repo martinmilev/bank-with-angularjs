@@ -9,4 +9,6 @@ public interface AccountRepository {
   Account register(String pesho, Double v);
 
   Optional<Account> getById(String id);
+
+  void update(String id, Double amount);
 }

@@ -1,4 +1,4 @@
-package com.clouway.bank.Presistence;
+package com.clouway.bank.persistence;
 
 import com.clouway.bank.core.Account;
 import com.clouway.bank.core.AccountRepository;
@@ -30,7 +30,7 @@ public class PersistentAccountRepository implements AccountRepository {
     document.put("name", name);
     document.put("balance", balance);
     collection.insertOne(document);
-    ObjectId id = (ObjectId)document.get( "_id" );
+    ObjectId id = (ObjectId) document.get("_id");
     return new Account(id.toHexString(), name, balance);
   }
 
@@ -49,8 +49,8 @@ public class PersistentAccountRepository implements AccountRepository {
   }
 
   @Override
-  public void update(String id, Account account) {
+  public void update(String id, Double amount) {
     MongoCollection<Document> collection = db.get().getCollection("accounts");
-    collection.findOneAndReplace(new Document(id, "_id"), new Document());
+    collection.findOneAndUpdate(new Document("_id", new ObjectId(id)), new Document("$set", new Document("balance", amount)));
   }
 }

@@ -5,36 +5,49 @@ import com.google.inject.Inject;
 import com.google.sitebricks.At;
 import com.google.sitebricks.client.transport.Json;
 import com.google.sitebricks.headless.Reply;
+import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.headless.Service;
 import com.google.sitebricks.http.Get;
-import com.google.sitebricks.http.Post;
 
 /**
  * @author Martin Milev <martinmariusmilev@gmail.com>
  */
 @Service
-@At("/v1/transaction")
-public class TransactionService {
+@At("/v1/")
+public class HomePageService {
   private final AccountRepository accountRepository;
 
   @Inject
-  public TransactionService(AccountRepository accountRepository) {
+  public HomePageService(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
 
   @Get
-  public Reply<?> getAccount() {
+  public Reply<?> operation(Request request) {
     // logged user
+    UserID id = new UserID();
+    return Reply.with(accountRepository.getById(id.id).get()).as(Json.class);
+  }
 
-    return Reply.with(accountRepository.getById("5880a4a111e4c742167cbb98").get()).as(Json.class);
+  private static class UserID {
+    private String id = "5880c362e4e63f70e073848a";
+
+    public UserID() {}
+
+    public UserID(String id) {
+      this.id = id;
+    }
+
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
   }
 
   // GET v1/users/53245/transactions
   // GET v1/users/12312/transactions
-
-
-  @Post
-  public Reply<?> deposit() {
-    return null;
-  }
 }

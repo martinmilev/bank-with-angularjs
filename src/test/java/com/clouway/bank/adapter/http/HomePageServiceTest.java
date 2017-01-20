@@ -18,7 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author Martin Milev <martinmariusmilev@gmail.com>
  */
-public class TransactionServiceTest {
+public class HomePageServiceTest {
 
   @Rule
   public JUnitRuleMockery context = new JUnitRuleMockery();
