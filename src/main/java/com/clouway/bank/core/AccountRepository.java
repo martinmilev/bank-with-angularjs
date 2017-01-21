@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface AccountRepository {
   Account register(String pesho, Double v);
 
-  Optional<Account> getById(String id);
+  Optional<Account> findById(String id);
 
   void update(String id, Double amount);
 }

@@ -23,7 +23,7 @@ public class HomePageService {
 
   @Get
   public Reply<?> getAccount() {
-    return Reply.with(accountRepository.getById(new UserID().id).get()).as(Json.class);
+    return Reply.with(accountRepository.findById(new UserID().id).get()).as(Json.class);
   }
 
   private static class UserID {

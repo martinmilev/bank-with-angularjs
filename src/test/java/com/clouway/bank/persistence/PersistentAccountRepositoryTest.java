@@ -24,14 +24,14 @@
 //  @Test
 //  public void happyPath() throws Exception {
 //    Account actual = accountRepository.register("A", 10d);
-//    Account expected = accountRepository.getById(actual.id).get();
+//    Account expected = accountRepository.findById(actual.id).get();
 //
 //    assertThat(actual, is(expected));
 //  }
 //
 //  @Test
 //  public void getUnexistingAccount() throws Exception {
-//    Optional<Account> actual = accountRepository.getById("507f1f77bcf86cd799439011");
+//    Optional<Account> actual = accountRepository.findById("507f1f77bcf86cd799439011");
 //
 //    assertTrue(!actual.isPresent());
 //  }
@@ -41,7 +41,7 @@
 //    Account account = accountRepository.register("A", 10d);
 //    Double expected = 5d;
 //    accountRepository.update(account.id, expected);
-//    Double actual = accountRepository.getById(account.id).get().balance;
+//    Double actual = accountRepository.findById(account.id).get().balance;
 //    assertThat(actual, is(expected));
 //  }
 //}

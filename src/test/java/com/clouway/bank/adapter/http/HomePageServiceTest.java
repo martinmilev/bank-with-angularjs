@@ -32,7 +32,7 @@ public class HomePageServiceTest {
     final Optional<Account> possibleAccount = Optional.of(new Account("id", "A", 1d));
 
     context.checking(new Expectations() {{
-      oneOf(userRepository).getById(null);
+      oneOf(userRepository).findById(null);
       will(returnValue(possibleAccount));
     }});
 

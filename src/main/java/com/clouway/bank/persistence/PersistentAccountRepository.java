@@ -35,7 +35,7 @@ public class PersistentAccountRepository implements AccountRepository {
   }
 
   @Override
-  public Optional<Account> getById(String id) {
+  public Optional<Account> findById(String id) {
     MongoCollection<Document> collection = db.get().getCollection("accounts");
     MongoCursor<Document> cursor = collection.find(new Document("_id", new ObjectId(id))).iterator();
     if (cursor.hasNext()) {

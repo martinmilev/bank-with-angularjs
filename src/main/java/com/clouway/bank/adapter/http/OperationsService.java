@@ -1,9 +1,11 @@
 package com.clouway.bank.adapter.http;
 
+import com.clouway.bank.core.Account;
 import com.clouway.bank.core.AccountRepository;
 import com.google.inject.Inject;
 import com.google.sitebricks.At;
 import com.google.sitebricks.headless.Reply;
+import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.headless.Service;
 import com.google.sitebricks.http.Post;
 
@@ -21,13 +23,24 @@ public class OperationsService {
   }
 
   @Post
-  public Reply<?> issueOperation() {
-    Operation operation = new Operation();
-    accountRepository.update("5880c362e4e63f70e073848a", Double.valueOf(operation.amount));
+  public Reply<?> issueOperation(Request request) {
+    Operation operation = request.read(Operation.class).as(Json.class);
+    Account account = accountRepository.findById("5880c362e4e63f70e073848a").get();
+    Double newBalance = 0d;
+
+    switch (operation.type) {
+      case "deposit" :
+        newBalance = account.balance + Double.valueOf(operation.amount);
+      break;
+      case "withdraw" :
+        newBalance = account.balance - Double.valueOf(operation.amount);
+
+    }
+    accountRepository.update(account.id,newBalance);
     return Reply.saying().ok();
   }
 
-  private static class Operation {
+  public static class Operation {
     private String amount;
     private String type;
 
