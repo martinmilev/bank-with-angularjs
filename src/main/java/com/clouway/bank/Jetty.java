@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
+import com.mongodb.MongoClient;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -20,39 +21,43 @@ import java.util.EnumSet;
  */
 public class Jetty {
   private final Server server;
+  private final MongoClient client;
+  private final String accountId;
 
-   public Jetty(int port) {
-     this.server = new Server(port);
-   }
+  public Jetty(int port, MongoClient client, String accountId) {
+    this.server = new Server(port);
+    this.client = client;
+    this.accountId = accountId;
+  }
 
-   public void start() {
-     ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-     servletContext.setContextPath("/");
-     servletContext.addServlet(DefaultServlet.class, "/");
-     servletContext.addFilter(GuiceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.INCLUDE));
+  public void start() {
+    ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    servletContext.setContextPath("/");
+    servletContext.addServlet(DefaultServlet.class, "/");
+    servletContext.addFilter(GuiceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST, DispatcherType.INCLUDE));
 
-     servletContext.addEventListener(new GuiceServletContextListener() {
-       @Override
-       protected Injector getInjector() {
-         return Guice.createInjector(new BankModule());
-       }
-     });
+    servletContext.addEventListener(new GuiceServletContextListener() {
+      @Override
+      protected Injector getInjector() {
+        return Guice.createInjector(new BankModule(client, accountId));
+      }
+    });
 
-     ContextHandler staticResourceHandler = new ContextHandler();
-     staticResourceHandler.setContextPath("/assets");
-     ResourceHandler resourceHandler = new ResourceHandler();
-     resourceHandler.setResourceBase("static");
+    ContextHandler staticResourceHandler = new ContextHandler();
+    staticResourceHandler.setContextPath("/assets");
+    ResourceHandler resourceHandler = new ResourceHandler();
+    resourceHandler.setResourceBase("static");
 
-     staticResourceHandler.setHandler(resourceHandler);
+    staticResourceHandler.setHandler(resourceHandler);
 
-     HandlerList handlers = new HandlerList();
-     handlers.setHandlers(new Handler[]{staticResourceHandler, servletContext});
+    HandlerList handlers = new HandlerList();
+    handlers.setHandlers(new Handler[]{staticResourceHandler, servletContext});
 
-     server.setHandler(handlers);
-     try {
-       server.start();
-     } catch (Exception e) {
-       e.printStackTrace();
-     }
-   }
+    server.setHandler(handlers);
+    try {
+      server.start();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

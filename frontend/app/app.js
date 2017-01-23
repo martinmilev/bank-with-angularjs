@@ -24,3 +24,20 @@ app.controller('TransactionsHistoryCtrl', function($scope, $http) {
       $scope.transactions = response.data;
     });
 });
+
+app.controller('HomePageCtrl', function($scope, $http) {
+  $scope.account = {};
+  $scope.operation = {type: "deposit"};
+
+  $http.get("/v1/useraccount")
+    .then(function(response) {
+      $scope.account = response.data;
+  });
+
+  $scope.executeOperation = function(operation) {
+    $http.post("/v1/operation", operation).then(function (response) {
+      $scope.account.balance = response.data.balance;
+    });
+  }
+});
+

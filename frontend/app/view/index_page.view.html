@@ -1,1 +1,47 @@
-<div>Hello !</div>
+<div class="container col-md-8 col-md-offset-1" ng-controller="HomePageCtrl">
+    <ul class="list-group text-muted h4">
+        <li class="list-group-item">
+            <div class="user-info-block">
+                <p class="h3"><span class="glyphicon glyphicon-user"></span> {{ account.name }}
+                    <span class="pull-right">Balance: {{ account.balance }} <span
+                            class="glyphicon glyphicon-bitcoin"></span></span></p>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="checkbox col-md-8 col-md-offset-2">
+                        <label class="pull-left text-success">
+                            Deposit
+                            <input type="radio" ng-model="operation.type" value="deposit">
+                            <span class="glyphicon glyphicon glyphicon-plus-sign"></span>
+                        </label>
+                        <label class="pull-right text-danger ">
+                            <span class="glyphicon glyphicon-minus-sign"></span>
+                            <input type="radio" ng-model="operation.type" value="withdraw">
+                            Withdraw
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <div class="input-group col-md-8 col-md-offset-2">
+                            <input class="form-control" type="number" step="0.01" min="0"
+                                   placeholder="0.00" ng-model="operation.amount" required>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-bitcoin"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center text-danger">{{ message }}</p>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label"></label>
+                    <div class="col-md-4">
+                        <button type='submit' class="btn btn-success" ng-click="executeOperation(operation)">Execute Operation</button>
+                    </div>
+                </div>
+            </form>
+        </li>
+    </ul>
+</div>
