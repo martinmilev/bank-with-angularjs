@@ -111,4 +111,42 @@ describe('HomePageCtrl', function() {
 
     expect($scope.account.balance).toEqual(11.23);
   }));
+
+  it ('should return message after operation if executed successfully', inject(function($http) {
+    var $scope = {};
+    $controller('HomePageCtrl', { $scope: $scope, $http: $http });
+
+    $httpBackend
+            .expect('GET', '/v1/useraccount')
+            .respond(200, { foo: 'bar' });
+
+    $httpBackend
+            .expect('POST', '/v1/operation', {type: 'deposit'})
+            .respond(200, { balance: 2.4 });
+
+    $scope.executeOperation({type: "deposit"});
+
+    $httpBackend.flush();
+
+    expect($scope.message.success).toEqual("Operation completed successfully: ");
+  }));
+
+  it ('should return message after ', inject(function($http) {
+    var $scope = {};
+    $controller('HomePageCtrl', { $scope: $scope, $http: $http });
+
+    $httpBackend
+            .expect('GET', '/v1/useraccount')
+            .respond(200, { foo: 'bar' });
+
+    $httpBackend
+            .expect('POST', '/v1/operation', {type: 'withdraw'})
+            .respond(400);
+
+    $scope.executeOperation({type: "withdraw"});
+
+    $httpBackend.flush();
+
+    expect($scope.message.error).toEqual("Insufficient amount in your account: ");
+  }));
 });

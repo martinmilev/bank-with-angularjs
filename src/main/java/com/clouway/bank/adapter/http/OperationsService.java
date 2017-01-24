@@ -40,17 +40,22 @@ public class OperationsService {
     }
 
     Account account = possibleAccount.get();
+    Double requestedAmount = Double.valueOf(operation.amount);
     Double newBalance = 0d;
 
-    switch (operation.type) {
-      case "deposit" :
-        newBalance = account.balance + Double.valueOf(operation.amount);
-      break;
-      case "withdraw" :
-        newBalance = account.balance - Double.valueOf(operation.amount);
-
+    if (account.balance < requestedAmount && operation.type.equals("withdraw")) {
+      return Reply.saying().badRequest();
     }
-    accountRepository.update(account.id,newBalance);
+
+    switch (operation.type) {
+      case "deposit":
+        newBalance = account.balance + requestedAmount;
+        break;
+      case "withdraw":
+        newBalance = account.balance - requestedAmount;
+        break;
+    }
+    accountRepository.update(account.id, newBalance);
 
     return Reply.with(new DepositResult(newBalance)).as(Json.class);
   }

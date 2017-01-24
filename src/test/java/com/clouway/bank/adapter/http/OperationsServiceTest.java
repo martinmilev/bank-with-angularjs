@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.util.Optional;
 
+import static com.clouway.bank.matchers.SitebricksMatchers.isBadRequest;
 import static com.clouway.bank.matchers.SitebricksMatchers.isOk;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -84,5 +85,22 @@ public class OperationsServiceTest {
     Reply<?> reply = homePageService.issueOperation(request);
 
     assertThat(reply, isOk());
+  }
+
+  @Test
+  public void insuficientFunds() throws Exception {
+    final Operation operation = new Operation("10", "withdraw");
+    FakeRequest request = new FakeRequest(operation);
+
+    context.checking(new Expectations() {{
+      oneOf(userSecurity).currentUser();
+      will(returnValue(new User("::any user id::")));
+      oneOf(accountRepository).findUserAccount("::any user id::");
+      will(returnValue(Optional.of(new Account("::any account id::", "A", 5d))));
+    }});
+
+    Reply<?> reply = homePageService.issueOperation(request);
+
+    assertThat(reply, isBadRequest());
   }
 }
