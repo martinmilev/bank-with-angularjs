@@ -24,11 +24,14 @@
     "karma-webpack": "^1.8.1",
     "ng-cache-loader": "0.0.22",
     "phantomjs-prebuilt": "^2.1.14",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "webpack-uglify-js-plugin": "^1.1.9"
   },
   "scripts": {
     "test": "karma start karma.conf.js",
-    "start": "node express.js"
+    "start": "node express.js",
+    "build:dev": "webpack --config webpack.config.js",
+    "build:production": "NODE_ENV=production webpack --config webpack.config.js"
   },
   "author": "clouway",
   "license": "BSD",

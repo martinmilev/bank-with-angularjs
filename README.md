@@ -14,3 +14,9 @@ $ npm start
 ```sh
 $ npm test
 ```
+
+**Packaging**
+```sh
+npm run build:dev
+npm run build:production
+```
