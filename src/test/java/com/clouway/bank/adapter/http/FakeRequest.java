@@ -5,6 +5,7 @@ import com.google.inject.TypeLiteral;
 import com.google.sitebricks.client.Transport;
 import com.google.sitebricks.headless.Request;
 
+import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -31,6 +32,9 @@ public class FakeRequest implements Request {
   @Override
   public <E> RequestRead<E> read(TypeLiteral<E> typeLiteral) {
     return null;
+  }
+
+  public void addCookie(Cookie cookie) {
   }
 
   @Override
@@ -86,10 +90,10 @@ public class FakeRequest implements Request {
   @Override
   public String method() {
     return null;
+
   }
 
   @Override
   public void validate(Object o) {
-
   }
 }

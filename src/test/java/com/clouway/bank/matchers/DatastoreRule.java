@@ -1,4 +1,4 @@
-package com.clouway.bank.adapter.persistence;
+package com.clouway.bank.matchers;
 
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
@@ -10,10 +10,10 @@ import org.junit.rules.ExternalResource;
  * @author Martin Milev <martinmariusmilev@gmail.com>
  */
 public class DatastoreRule extends ExternalResource {
-  private String collection = "";
+  private String[] collections;
 
-  public DatastoreRule(String collection) {
-    this.collection = collection;
+  public DatastoreRule(String... collections) {
+    this.collections = collections;
   }
 
   public Provider<MongoDatabase> getDatabase() {
@@ -22,7 +22,9 @@ public class DatastoreRule extends ExternalResource {
 
   @Override
   protected void before() throws Throwable {
-    getDatabase().get().getCollection(collection).drop();
+    for (String collection : collections) {
+      getDatabase().get().getCollection(collection).drop();
+    }
   }
 
   @Override

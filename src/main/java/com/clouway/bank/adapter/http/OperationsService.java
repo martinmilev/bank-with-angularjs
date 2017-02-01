@@ -34,7 +34,7 @@ public class OperationsService {
     // Logged user ...
     User user = userSecurity.currentUser();
 
-    Optional<Account> possibleAccount = accountRepository.findUserAccount(user.userId());
+    Optional<Account> possibleAccount = accountRepository.findUserAccount(user.userId);
     if (!possibleAccount.isPresent()) {
       return Reply.saying().notFound();
     }

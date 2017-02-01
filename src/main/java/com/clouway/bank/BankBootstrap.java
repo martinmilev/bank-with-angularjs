@@ -26,7 +26,7 @@ public class BankBootstrap {
       databaseHost = args[1];
     }
 
-    Logger mongoLogger = Logger.getLogger( "org.mongodb" );
+    Logger mongoLogger = Logger.getLogger("org.mongodb");
     mongoLogger.setLevel(Level.SEVERE); // e.g. or Log.WARNING, etc.
 
     final int httpPort = 8080;
@@ -72,5 +72,19 @@ public class BankBootstrap {
     jetty.start();
 
     System.out.println(String.format("Bank is up and running on: %d", httpPort));
+  }
+
+  class Session {
+    private String id;
+    private Integer durationInSeconds;
+
+    public Session(String id, Integer durationInSeconds) {
+      this.id = id;
+      this.durationInSeconds = durationInSeconds;
+    }
+  }
+
+  public interface Sessions {
+    Session authenticate(String username, String password);
   }
 }

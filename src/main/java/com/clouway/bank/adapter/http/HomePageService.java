@@ -31,7 +31,7 @@ public class HomePageService {
   public Reply<?> getAccount() {
     User user = userSecurity.currentUser();
 
-    Optional<Account> possibleAccount = accountRepository.findUserAccount(user.userId());
+    Optional<Account> possibleAccount = accountRepository.findUserAccount(user.userId);
 
     if (!possibleAccount.isPresent()) {
       return Reply.saying().badRequest();

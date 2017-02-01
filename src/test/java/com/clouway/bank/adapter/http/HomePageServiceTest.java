@@ -36,7 +36,7 @@ public class HomePageServiceTest {
 
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("id")));
+      will(returnValue(new User("id", "name", "password")));
       oneOf(userRepository).findUserAccount("id");
       will(returnValue(possibleAccount));
     }});
@@ -54,7 +54,7 @@ public class HomePageServiceTest {
 
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("id")));
+      will(returnValue(new User("id", "name", "password")));
       oneOf(userRepository).findUserAccount("id");
       will(returnValue(possibleAccount));
     }});

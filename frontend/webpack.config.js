@@ -4,6 +4,7 @@ var path = require('path')
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpackUglifyJsPlugin = require('webpack-uglify-js-plugin');
+var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
 var env = process.env.NODE_ENV || 'development'
 const __PROD__ = env === 'production'
@@ -39,12 +40,13 @@ webpackConfig.plugins = [
   }),
   new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js"),
   new ExtractTextPlugin("/styles/style.css"),
+  new ngAnnotatePlugin({add: true}),
   new CopyWebpackPlugin([
     {
       from: './node_modules/bootstrap/dist/fonts',
       to: 'fonts'
     }
-  ])
+  ]),
 ]
 
 if (__PROD__) {
@@ -59,6 +61,11 @@ if (__PROD__) {
       },
       compressor: {
         warnings: false
+      },
+      options: {
+        mangle: {
+          except: ['jQuery', 'angular']
+        }
       }
     })
   );

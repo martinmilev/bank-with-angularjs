@@ -1,5 +1,6 @@
 package com.clouway.bank.adapter.persistence;
 
+import com.clouway.bank.matchers.DatastoreRule;
 import com.clouway.bank.core.Account;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,7 +24,7 @@ public class PersistentAccountRepositoryTest {
 
   @Before
   public void setUp() {
-     accountRepository = new PersistentAccountRepository(datastoreRule.getDatabase());
+    accountRepository = new PersistentAccountRepository(datastoreRule.getDatabase());
   }
 
   @Test

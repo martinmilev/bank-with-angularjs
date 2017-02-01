@@ -4,13 +4,13 @@ package com.clouway.bank.core;
  * @author Martin Milev <martinmariusmilev@gmail.com>
  */
 public class User {
-  private String userId;
+  public final String userId;
+  public final String name;
+  public final String password;
 
-  public User(String userId) {
+  public User(String userId, String name, String password) {
     this.userId = userId;
-  }
-
-  public String userId() {
-    return userId;
+    this.name = name;
+    this.password = password;
   }
 }
