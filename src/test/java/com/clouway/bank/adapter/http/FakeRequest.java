@@ -8,11 +8,14 @@ import com.google.sitebricks.headless.Request;
 import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Martin Milev <martinmariusmilev@gmail.com>
  */
 public class FakeRequest implements Request {
+  private Map<String, String> parameters = new HashMap<>();
   private Object requestedObject;
 
   public FakeRequest(Object requestedObject) {
@@ -32,6 +35,15 @@ public class FakeRequest implements Request {
   @Override
   public <E> RequestRead<E> read(TypeLiteral<E> typeLiteral) {
     return null;
+  }
+
+  @Override
+  public String param(String key) {
+    return parameters.get(key);
+  }
+
+  public void setParameter(String key, String value) {
+    parameters.put(key,value);
   }
 
   public void addCookie(Cookie cookie) {
@@ -59,11 +71,6 @@ public class FakeRequest implements Request {
 
   @Override
   public String matrixParam(String s) {
-    return null;
-  }
-
-  @Override
-  public String param(String s) {
     return null;
   }
 

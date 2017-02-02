@@ -5,7 +5,6 @@ import com.clouway.bank.core.SessionRepository;
 import com.clouway.bank.core.User;
 import com.clouway.bank.core.UserAuthentication;
 import com.google.inject.util.Providers;
-import com.google.sitebricks.headless.Request;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
@@ -26,9 +25,9 @@ public class LoginPageTest {
   public JUnitRuleMockery context = new JUnitRuleMockery();
   private SessionRepository sessionRepository = context.mock(SessionRepository.class);
   private UserAuthentication userAuthentication = context.mock(UserAuthentication.class);
-  private Request request = context.mock((Request.class));
 
   private FakeHttpServletResponse response = new FakeHttpServletResponse();
+  private FakeRequest request = new FakeRequest(Optional.empty());
   private LoginPage loginPage = new LoginPage(Providers.of(response), userAuthentication, sessionRepository);
 
   @Test
@@ -36,36 +35,33 @@ public class LoginPageTest {
     String name = "test";
     String pswd = "test";
     Optional<User> user = Optional.of(new User("::any id::", name, pswd));
+    request.setParameter("name", name);
+    request.setParameter("password", pswd);
 
     context.checking(new Expectations() {{
-      oneOf(request).param("name");
-      will(returnValue(name));
-      oneOf(request).param("password");
-      will(returnValue(pswd));
       oneOf(userAuthentication).authenticate(name);
       will(returnValue(user));
       oneOf(sessionRepository).startSession(with(any(LocalDateTime.class)));
       will(returnValue(new Session("::any id::", 30)));
     }});
 
-    String redirect = loginPage.login((Request) request);
+    String redirect = loginPage.login(request);
 
     assertThat(redirect, is("/"));
   }
 
   @Test
   public void userDoesNotExist() throws Exception {
+    request.setParameter("name", "::any name::");
+    request.setParameter("password", "::any password::");
+
     context.checking(new Expectations() {{
-      oneOf(request).param("name");
-      will(returnValue("::any name::"));
-      oneOf(request).param("password");
-      will(returnValue("::wrong password::"));
       oneOf(userAuthentication).authenticate("::any name::");
       will(returnValue(Optional.empty()));
     }});
 
-    loginPage.login((Request) request);
-    String message = loginPage.getMessage();
+    loginPage.login(request);
+    String message = loginPage.getErrorMessage();
 
     assertThat(message, is("Incorrect username."));
   }
@@ -75,20 +71,17 @@ public class LoginPageTest {
     String name = "test";
     String pswd = "test";
     Optional<User> user = Optional.of(new User("::any id::", name, pswd));
+    request.setParameter("name", "test");
+    request.setParameter("password", "::any password::");
 
     context.checking(new Expectations() {{
-      oneOf(request).param("name");
-      will(returnValue(name));
-      oneOf(request).param("password");
-      will(returnValue("::wrong password::"));
       oneOf(userAuthentication).authenticate(name);
       will(returnValue(user));
     }});
 
-    loginPage.login((Request) request);
-    String message = loginPage.getMessage();
+    loginPage.login(request);
+    String message = loginPage.getErrorMessage();
 
     assertThat(message, is("Incorrect password."));
-
   }
 }

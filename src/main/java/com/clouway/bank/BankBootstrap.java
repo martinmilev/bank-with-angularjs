@@ -73,18 +73,4 @@ public class BankBootstrap {
 
     System.out.println(String.format("Bank is up and running on: %d", httpPort));
   }
-
-  class Session {
-    private String id;
-    private Integer durationInSeconds;
-
-    public Session(String id, Integer durationInSeconds) {
-      this.id = id;
-      this.durationInSeconds = durationInSeconds;
-    }
-  }
-
-  public interface Sessions {
-    Session authenticate(String username, String password);
-  }
 }

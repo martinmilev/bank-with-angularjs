@@ -18,7 +18,7 @@ import static org.hamcrest.core.Is.is;
 public class PersistentAccountRepositoryTest {
 
   @Rule
-  public DatastoreRule datastoreRule = new DatastoreRule("accounts");
+  public DatastoreRule datastoreRule = new DatastoreRule();
 
   private PersistentAccountRepository accountRepository;
 

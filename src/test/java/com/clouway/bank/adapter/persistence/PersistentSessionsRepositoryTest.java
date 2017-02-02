@@ -20,7 +20,7 @@ public class PersistentSessionsRepositoryTest {
   private PersistentSessionRepository sessions;
 
   @Rule
-  public DatastoreRule datastoreRule = new DatastoreRule("sessions");
+  public DatastoreRule datastoreRule = new DatastoreRule();
 
   @Before
   public void setUp() throws Exception {

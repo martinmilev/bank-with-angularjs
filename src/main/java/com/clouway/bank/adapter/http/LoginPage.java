@@ -25,13 +25,18 @@ public class LoginPage {
   private final HttpServletResponse response;
   private final UserAuthentication userAuthentication;
   private final SessionRepository sessionRepository;
-  private String message;
+  private boolean showErrorMessage = false;
+  private String errorMessage;
 
   @Inject
   public LoginPage(Provider<HttpServletResponse> response, UserAuthentication userAuthentication, SessionRepository sessionRepository) {
     this.response = response.get();
     this.userAuthentication = userAuthentication;
     this.sessionRepository = sessionRepository;
+  }
+
+  public boolean isShowErrorMessage() {
+    return showErrorMessage;
   }
 
   @Post
@@ -41,12 +46,14 @@ public class LoginPage {
 
     Optional<User> user = userAuthentication.authenticate(name);
     if (!user.isPresent()) {
-      message = "<div class='alert alert-danger'><p>Incorrect username.</p></div>";
+      showErrorMessage = true;
+      errorMessage = "Incorrect username.";
       return null;
     }
 
     if (!user.get().password.equals(password)) {
-      message = "<div class='alert alert-danger'><p>Incorrect password.</p></div>";
+      showErrorMessage = true;
+      errorMessage = "Incorrect password.";
       return null;
     }
 
@@ -58,7 +65,7 @@ public class LoginPage {
     return "/";
   }
 
-  public String getMessage() {
-    return message;
+  public String getErrorMessage() {
+    return errorMessage;
   }
 }
