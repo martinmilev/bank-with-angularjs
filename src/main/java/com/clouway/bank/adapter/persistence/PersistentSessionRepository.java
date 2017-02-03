@@ -27,14 +27,13 @@ public class PersistentSessionRepository implements SessionRepository {
   }
 
   @Override
-  public Session startSession(LocalDateTime instant) {
+  public Session startSession(LocalDateTime instant, String username) {
     Date creationDate = Date.from(instant.atZone(ZoneId.systemDefault()).toInstant());
     String sessionId = BaseEncoding.base64().encode(UUID.randomUUID().toString().getBytes());
     db.get().getCollection("sessions").insertOne(
-            new Document("_id", sessionId).append("createdOn", creationDate)
+            new Document("_id", sessionId).append("createdOn", creationDate).append("sessionOwner", username)
     );
-
-    return new Session(sessionId, durationInMinutes);
+    return new Session(sessionId, durationInMinutes, username);
   }
 
   @Override
@@ -43,9 +42,11 @@ public class PersistentSessionRepository implements SessionRepository {
 
     Document document = db.get().getCollection("sessions")
             .find(new Document("_id", sessionId)).first();
+
     if (document == null) {
       return Optional.empty();
     }
+
     Date createdOn = document.getDate("createdOn");
     int seconds = durationInMinutes * 60;
     int milliseconds = seconds * 1000;
@@ -55,8 +56,7 @@ public class PersistentSessionRepository implements SessionRepository {
       return Optional.empty();
     }
 
-    return Optional.of(new Session(document.getString("_id"), durationInMinutes));
-
+    return Optional.of(new Session(document.getString("_id"), durationInMinutes, document.getString("sessionOwner")));
   }
 
   @Override

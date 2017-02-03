@@ -5,11 +5,13 @@ package com.clouway.bank.core;
  */
 public class Session {
   private final String sessionId;
-  private int durationInMinutes;
+  private final int durationInMinutes;
+  private final String username;
 
-  public Session(String sessionId, int durationInMinutes) {
+  public Session(String sessionId, int durationInMinutes, String username) {
     this.sessionId = sessionId;
     this.durationInMinutes = durationInMinutes;
+    this.username = username;
   }
 
   public String id() {
@@ -18,5 +20,9 @@ public class Session {
 
   public int durationInSeconds() {
     return durationInMinutes * 60;
+  }
+
+  public String getUsername() {
+    return username;
   }
 }

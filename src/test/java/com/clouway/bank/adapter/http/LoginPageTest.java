@@ -3,7 +3,7 @@ package com.clouway.bank.adapter.http;
 import com.clouway.bank.core.Session;
 import com.clouway.bank.core.SessionRepository;
 import com.clouway.bank.core.User;
-import com.clouway.bank.core.UserAuthentication;
+import com.clouway.bank.core.UserRepository;
 import com.google.inject.util.Providers;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -24,11 +24,11 @@ public class LoginPageTest {
   @Rule
   public JUnitRuleMockery context = new JUnitRuleMockery();
   private SessionRepository sessionRepository = context.mock(SessionRepository.class);
-  private UserAuthentication userAuthentication = context.mock(UserAuthentication.class);
+  private UserRepository userRepository = context.mock(UserRepository.class);
 
   private FakeHttpServletResponse response = new FakeHttpServletResponse();
   private FakeRequest request = new FakeRequest(Optional.empty());
-  private LoginPage loginPage = new LoginPage(Providers.of(response), userAuthentication, sessionRepository);
+  private LoginPage loginPage = new LoginPage(Providers.of(response), userRepository, sessionRepository);
 
   @Test
   public void loginAuthorisedUser() throws Exception {
@@ -39,10 +39,10 @@ public class LoginPageTest {
     request.setParameter("password", pswd);
 
     context.checking(new Expectations() {{
-      oneOf(userAuthentication).authenticate(name);
+      oneOf(userRepository).findByUserName(name);
       will(returnValue(user));
-      oneOf(sessionRepository).startSession(with(any(LocalDateTime.class)));
-      will(returnValue(new Session("::any id::", 30)));
+      oneOf(sessionRepository).startSession(with(any(LocalDateTime.class)), with(any(String.class)));
+      will(returnValue(new Session("::any id::", 30, name)));
     }});
 
     String redirect = loginPage.login(request);
@@ -56,7 +56,7 @@ public class LoginPageTest {
     request.setParameter("password", "::any password::");
 
     context.checking(new Expectations() {{
-      oneOf(userAuthentication).authenticate("::any name::");
+      oneOf(userRepository).findByUserName("::any name::");
       will(returnValue(Optional.empty()));
     }});
 
@@ -75,7 +75,7 @@ public class LoginPageTest {
     request.setParameter("password", "::any password::");
 
     context.checking(new Expectations() {{
-      oneOf(userAuthentication).authenticate(name);
+      oneOf(userRepository).findByUserName(name);
       will(returnValue(user));
     }});
 

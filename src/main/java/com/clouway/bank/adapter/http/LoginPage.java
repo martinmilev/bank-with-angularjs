@@ -3,7 +3,7 @@ package com.clouway.bank.adapter.http;
 import com.clouway.bank.core.Session;
 import com.clouway.bank.core.SessionRepository;
 import com.clouway.bank.core.User;
-import com.clouway.bank.core.UserAuthentication;
+import com.clouway.bank.core.UserRepository;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.sitebricks.At;
@@ -23,28 +23,24 @@ import java.util.Optional;
 @Show("LoginPage.html")
 public class LoginPage {
   private final HttpServletResponse response;
-  private final UserAuthentication userAuthentication;
+  private final UserRepository userRepository;
   private final SessionRepository sessionRepository;
   private boolean showErrorMessage = false;
   private String errorMessage;
 
   @Inject
-  public LoginPage(Provider<HttpServletResponse> response, UserAuthentication userAuthentication, SessionRepository sessionRepository) {
+  public LoginPage(Provider<HttpServletResponse> response, UserRepository userRepository, SessionRepository sessionRepository) {
     this.response = response.get();
-    this.userAuthentication = userAuthentication;
+    this.userRepository = userRepository;
     this.sessionRepository = sessionRepository;
-  }
-
-  public boolean isShowErrorMessage() {
-    return showErrorMessage;
   }
 
   @Post
   public String login(Request request) {
-    String name = request.param("name");
+    String username = request.param("name");
     String password = request.param("password");
 
-    Optional<User> user = userAuthentication.authenticate(name);
+    Optional<User> user = userRepository.findByUserName(username);
     if (!user.isPresent()) {
       showErrorMessage = true;
       errorMessage = "Incorrect username.";
@@ -57,7 +53,7 @@ public class LoginPage {
       return null;
     }
 
-    Session session = sessionRepository.startSession(LocalDateTime.now());
+    Session session = sessionRepository.startSession(LocalDateTime.now(), username);
     Cookie cookie = new Cookie("SID", session.id());
     cookie.setMaxAge(session.durationInSeconds());
 
@@ -67,5 +63,9 @@ public class LoginPage {
 
   public String getErrorMessage() {
     return errorMessage;
+  }
+
+  public boolean isShowErrorMessage() {
+    return showErrorMessage;
   }
 }

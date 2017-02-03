@@ -1,7 +1,9 @@
 package com.clouway.bank;
 
+
 import com.clouway.bank.adapter.persistence.PersistentTransactionRepository;
 import com.clouway.bank.core.Account;
+
 import com.clouway.bank.adapter.persistence.PersistentAccountRepository;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
@@ -68,12 +70,7 @@ public class BankBootstrap {
       System.exit(-1);
     }
 
-    Provider<MongoDatabase> db = Providers.of(client.getDatabase("bankApp"));
-    PersistentTransactionRepository transactionRepository = new PersistentTransactionRepository(db);
-    PersistentAccountRepository accountRepository = new PersistentAccountRepository(db, transactionRepository);
-    Account account = accountRepository.register("Gosho", 24d);
-
-    Jetty jetty = new Jetty(httpPort, client, account.id);
+    Jetty jetty = new Jetty(httpPort, client);
     jetty.start();
 
     System.out.println(String.format("Bank is up and running on: %d", httpPort));

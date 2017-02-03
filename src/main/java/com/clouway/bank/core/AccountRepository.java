@@ -6,9 +6,8 @@ import java.util.Optional;
  * @author Martin Milev <martinmariusmilev@gmail.com>
  */
 public interface AccountRepository {
-  Account register(String username, Double initialBalance);
 
-  Optional<Account> findUserAccount(String id);
+  Optional<Account> findAccountByID(String id);
 
   void update(String id, Double amount, String operationType, String operationAmount);
 }

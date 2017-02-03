@@ -30,13 +30,13 @@ public class OperationsService {
   @Post
   public Reply<?> issueOperation(Request request) {
     Operation operation = request.read(Operation.class).as(Json.class);
-    // Logged username ...
-    User user = userSecurity.currentUser();
 
-    Optional<Account> possibleAccount = accountRepository.findUserAccount(user.userId);
-    if (!possibleAccount.isPresent()) {
-      return Reply.saying().notFound();
+    Optional<User> possibleUser = userSecurity.currentUser();
+    if (!possibleUser.isPresent()) {
+      return Reply.saying().unauthorized();
     }
+
+    Optional<Account> possibleAccount = accountRepository.findAccountByID(possibleUser.get().id);
 
     Account account = possibleAccount.get();
     Double requestedAmount = Double.valueOf(operation.amount);
@@ -55,6 +55,7 @@ public class OperationsService {
         accountRepository.update(account.id, newBalance, operation.type, operation.amount);
         break;
     }
+
     return Reply.with(new DepositResult(newBalance)).as(Json.class);
   }
 

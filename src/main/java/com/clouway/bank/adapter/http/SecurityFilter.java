@@ -38,7 +38,8 @@ public class SecurityFilter implements Filter {
     HttpServletRequest req = ((HttpServletRequest) servletRequest);
     HttpServletResponse resp = ((HttpServletResponse) servletResponse);
     // User is authenticated, then request need to be passed to sitebricks and servlets
-    if (hasValidCookie(req.getCookies()) || req.getRequestURI().equals("/login")) {
+    String uri = req.getRequestURI();
+    if (hasValidCookie(req.getCookies()) || uri.equals("/login") || uri.equals("/register")) {
       filterChain.doFilter(req, resp);
       return;
     }

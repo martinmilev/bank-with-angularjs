@@ -29,7 +29,7 @@ app.controller('TransactionsHistoryCtrl', function($scope, $http) {
   });
 
   $scope.goBack = function() {
-    $http.get("/v1/transactions", {params: {startingFromCursor: $scope.records[0].cursor, isNext: false}})
+    $http.get("/v1/transactions", {params: {startingFromCursor: $scope.records[0].id, isNext: false}})
       .then(function(response) {
         $scope.records = response.data;
         $scope.pageCounter--;
@@ -42,7 +42,7 @@ app.controller('TransactionsHistoryCtrl', function($scope, $http) {
   }
 
   $scope.goNext = function() {
-    $http.get("/v1/transactions", {params: {startingFromCursor: $scope.records[$scope.records.length - 1].cursor, isNext: true}})
+    $http.get("/v1/transactions", {params: {startingFromCursor: $scope.records[$scope.records.length - 1].id, isNext: true}})
       .then(function(response) {
         if (response.data[0] == undefined) {
           $scope.status.next = true;

@@ -10,12 +10,14 @@ import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.headless.Service;
 import com.google.sitebricks.http.Get;
 
+import java.util.Optional;
+
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 @Service
 @At("/v1/transactions")
-public class TransactionHistoryService {
+  public class TransactionHistoryService {
   private final TransactionRepository transactionRepository;
   private final Integer limit = 20;
   private UserSecurity security;
@@ -28,30 +30,11 @@ public class TransactionHistoryService {
 
   @Get
   public Reply<?> retrieveTransactionHistory(Request request) {
-    Query query = request.read(Query.class).as(Json.class);
-    User account = security.currentUser();
-
+    String startingFromCursor = request.param("startingFromCursor");
+    String isNext = request.param("isNext");
+    Optional<User> account = security.currentUser();
     return Reply.with(
-            transactionRepository.retrieveTransactions(account.userId, query.startingFromCursor, query.isNext, limit)
+            transactionRepository.retrieveTransactions(account.get().id, startingFromCursor, Boolean.valueOf(isNext), limit)
     ).as(Json.class);
-
-  }
-
-  public static class Query {
-    public final String startingFromCursor;
-    public final Boolean isNext;
-
-    public Query(String startingFromCursor, Boolean isNext) {
-      this.startingFromCursor = startingFromCursor;
-      this.isNext = isNext;
-    }
-
-    @Override
-    public String toString() {
-      return "Query{" +
-              ", cursor='" + startingFromCursor + '\'' +
-              ", isNext=" + isNext +
-              '}';
-    }
   }
 }

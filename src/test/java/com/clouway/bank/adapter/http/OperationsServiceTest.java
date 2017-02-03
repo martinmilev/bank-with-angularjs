@@ -37,8 +37,8 @@ public class OperationsServiceTest {
 
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("::any user id::", "", "")));
-      oneOf(accountRepository).findUserAccount("::any user id::");
+      will(returnValue(Optional.of(new User("::any user id::", "", ""))));
+      oneOf(accountRepository).findAccountByID("::any user id::");
       will(returnValue(possibleAccount));
       oneOf(accountRepository).update("cursor", 1.0, "deposit", "0");
     }});
@@ -55,8 +55,8 @@ public class OperationsServiceTest {
 
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("::any user id::", "name", "password")));
-      oneOf(accountRepository).findUserAccount("::any user id::");
+      will(returnValue(Optional.of(new User("::any user id::", "name", "password"))));
+      oneOf(accountRepository).findAccountByID("::any user id::");
       will(returnValue(Optional.of(new Account("id", "A", 1d))));
       oneOf(accountRepository).update("id", 2.0, "deposit", "1");
     }});
@@ -73,8 +73,8 @@ public class OperationsServiceTest {
 
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("::any user id::", "name", "password")));
-      oneOf(accountRepository).findUserAccount("::any user id::");
+      will(returnValue(Optional.of(new User("::any user id::", "::any name::", "::any password::"))));
+      oneOf(accountRepository).findAccountByID("::any user id::");
       will(returnValue(Optional.of(new Account("::any account id::", "A", 1d))));
       oneOf(accountRepository).update("::any account id::", 0.0, "withdraw", "1");
     }});
@@ -91,8 +91,8 @@ public class OperationsServiceTest {
 
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("::any user id::", "name", "password")));
-      oneOf(accountRepository).findUserAccount("::any user id::");
+      will(returnValue(Optional.of(new User("::any user id::", "::any name::", "::any password::"))));
+      oneOf(accountRepository).findAccountByID("::any user id::");
       will(returnValue(Optional.of(new Account("::any account id::", "A", 5d))));
     }});
 

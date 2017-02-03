@@ -22,12 +22,10 @@ import java.util.EnumSet;
 public class Jetty {
   private final Server server;
   private final MongoClient client;
-  private final String accountId;
 
-  public Jetty(int port, MongoClient client, String accountId) {
+  public Jetty(int port, MongoClient client) {
     this.server = new Server(port);
     this.client = client;
-    this.accountId = accountId;
   }
 
   public void start() {
@@ -39,7 +37,7 @@ public class Jetty {
     servletContext.addEventListener(new GuiceServletContextListener() {
       @Override
       protected Injector getInjector() {
-        return Guice.createInjector(new BankModule(client, accountId));
+        return Guice.createInjector(new BankModule(client));
       }
     });
 

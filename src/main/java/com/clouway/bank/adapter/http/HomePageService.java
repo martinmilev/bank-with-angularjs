@@ -29,14 +29,13 @@ public class HomePageService {
 
   @Get
   public Reply<?> getAccount() {
-    User user = userSecurity.currentUser();
+    Optional<User> possibleUser = userSecurity.currentUser();
 
-    Optional<Account> possibleAccount = accountRepository.findUserAccount(user.userId);
-
-    if (!possibleAccount.isPresent()) {
-      return Reply.saying().badRequest();
+    if (!possibleUser.isPresent()) {
+      return Reply.saying().unauthorized();
     }
 
+    Optional<Account> possibleAccount = accountRepository.findAccountByID(possibleUser.get().id);
     return Reply.with(possibleAccount.get()).as(Json.class);
   }
 }

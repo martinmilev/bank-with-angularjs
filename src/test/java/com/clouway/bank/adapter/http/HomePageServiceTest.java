@@ -12,8 +12,8 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static com.clouway.bank.matchers.SitebricksMatchers.isBadRequest;
 import static com.clouway.bank.matchers.SitebricksMatchers.isOk;
+import static com.clouway.bank.matchers.SitebricksMatchers.isUnauthorized;
 import static com.clouway.bank.matchers.SitebricksMatchers.sameAs;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -36,8 +36,8 @@ public class HomePageServiceTest {
 
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("id", "name", "password")));
-      oneOf(userRepository).findUserAccount("id");
+      will(returnValue(Optional.of(new User("id", "name", "password"))));
+      oneOf(userRepository).findAccountByID("id");
       will(returnValue(possibleAccount));
     }});
 
@@ -50,17 +50,13 @@ public class HomePageServiceTest {
 
   @Test
   public void notExistignAccount() {
-    final Optional<Account> possibleAccount = Optional.empty();
-
     context.checking(new Expectations() {{
       oneOf(userSecurity).currentUser();
-      will(returnValue(new User("id", "name", "password")));
-      oneOf(userRepository).findUserAccount("id");
-      will(returnValue(possibleAccount));
+      will(returnValue(Optional.empty()));
     }});
 
     Reply<?> reply = homePageService.getAccount();
 
-    assertThat(reply, isBadRequest());
+    assertThat(reply, isUnauthorized());
   }
 }

@@ -44,7 +44,7 @@ public class SecurityFilterTest {
 
     context.checking(new Expectations() {{
       oneOf(sessionRepository).findSessionAvailableAt(with(any(String.class)), with(any(LocalDateTime.class)));
-      will(returnValue(Optional.of(new Session(":: any id ::", 1))));
+      will(returnValue(Optional.of(new Session(":: any id ::", 1, "::any username::"))));
       oneOf(chain).doFilter(request, response);
     }});
 

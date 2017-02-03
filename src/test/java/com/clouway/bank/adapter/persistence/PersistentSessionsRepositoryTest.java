@@ -36,7 +36,7 @@ public class PersistentSessionsRepositoryTest {
 
   @Test
   public void findNotExpiredSession() {
-    Session session = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0));
+    Session session = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0), "::any username::");
     Optional<Session> possibleSession = sessions.findSessionAvailableAt(session.id(), LocalDateTime.of(2017, 1, 30, 9, 0));
 
     assertThat(possibleSession.isPresent(), is(true));
@@ -45,7 +45,7 @@ public class PersistentSessionsRepositoryTest {
 
   @Test
   public void findExpiredSession() {
-    Session session = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0));
+    Session session = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0), "::any username::");
 
     Optional<Session> possibleSession = sessions.findSessionAvailableAt(session.id(), LocalDateTime.of(2017, 1, 30, 10, 0));
 
@@ -55,8 +55,8 @@ public class PersistentSessionsRepositoryTest {
 
   @Test
   public void findMultipleNotExpiredSessions() {
-    Session firstSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0));
-    Session secondSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 3));
+    Session firstSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0), "::any username::");
+    Session secondSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 3), "::any username::");
 
     Optional<Session> possibleFs = sessions.findSessionAvailableAt(firstSession.id(), LocalDateTime.of(2017, 1, 30, 9, 15));
     Optional<Session> possibleSs = sessions.findSessionAvailableAt(secondSession.id(), LocalDateTime.of(2017, 1, 30, 9, 15));
@@ -70,8 +70,8 @@ public class PersistentSessionsRepositoryTest {
 
   @Test
   public void clearExpiredSessions() {
-    Session firstSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0));
-    Session secondSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 3));
+    Session firstSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 0), "::any username::");
+    Session secondSession = sessions.startSession(LocalDateTime.of(2017, 1, 30, 9, 3), "::any username::");
 
     sessions.clearExpiredSessions(LocalDateTime.of(2017, 1, 30, 10, 0));
 
