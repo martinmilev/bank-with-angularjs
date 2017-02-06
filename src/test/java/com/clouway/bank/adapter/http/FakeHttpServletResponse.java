@@ -13,14 +13,25 @@ import java.util.Locale;
  */
 public class FakeHttpServletResponse implements HttpServletResponse {
   private String redirect;
+  private Integer status;
 
   @Override
   public void sendRedirect(String location) throws IOException {
     this.redirect = location;
   }
 
+  @Override
+  public void setStatus(int sc) {
+    this.status = sc;
+  }
+
   public String getRedirect() {
     return redirect;
+  }
+
+  @Override
+  public int getStatus() {
+    return status;
   }
 
   @Override
@@ -31,6 +42,11 @@ public class FakeHttpServletResponse implements HttpServletResponse {
   @Override
   public boolean containsHeader(String name) {
     return false;
+  }
+
+  @Override
+  public void setStatus(int sc, String sm) {
+
   }
 
   @Override
@@ -91,21 +107,6 @@ public class FakeHttpServletResponse implements HttpServletResponse {
   @Override
   public void addIntHeader(String name, int value) {
 
-  }
-
-  @Override
-  public void setStatus(int sc) {
-
-  }
-
-  @Override
-  public void setStatus(int sc, String sm) {
-
-  }
-
-  @Override
-  public int getStatus() {
-    return 0;
   }
 
   @Override

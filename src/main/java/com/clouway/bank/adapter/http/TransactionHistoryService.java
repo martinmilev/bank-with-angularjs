@@ -33,6 +33,10 @@ import java.util.Optional;
     String startingFromCursor = request.param("startingFromCursor");
     String isNext = request.param("isNext");
     Optional<User> account = security.currentUser();
+    if (!account.isPresent()) {
+      return Reply.saying().unauthorized();
+    }
+
     return Reply.with(
             transactionRepository.retrieveTransactions(account.get().id, startingFromCursor, Boolean.valueOf(isNext), limit)
     ).as(Json.class);

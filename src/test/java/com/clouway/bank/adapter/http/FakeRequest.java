@@ -46,6 +46,11 @@ public class FakeRequest implements Request {
     parameters.put(key,value);
   }
 
+  @Override
+  public String uri() {
+    return null;
+  }
+
   public void addCookie(Cookie cookie) {
   }
 
@@ -76,11 +81,6 @@ public class FakeRequest implements Request {
 
   @Override
   public String header(String s) {
-    return null;
-  }
-
-  @Override
-  public String uri() {
     return null;
   }
 
