@@ -33,14 +33,19 @@ public class SecurityFilter implements Filter {
   public void init(FilterConfig filterConfig) throws ServletException {
   }
 
+
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
     HttpServletRequest req = ((HttpServletRequest) servletRequest);
     HttpServletResponse resp = ((HttpServletResponse) servletResponse);
     // User is authenticated, then request need to be passed to sitebricks and servlets
     String uri = req.getRequestURI();
-    if (hasValidCookie(req.getCookies()) || uri.equals("/login") || uri.equals("/register")) {
+    Cookie[] cookies = req.getCookies();
+    if (hasValidCookie(cookies) || uri.equals("/login") || uri.equals("/register")) {
       filterChain.doFilter(req, resp);
+      return;
+    } if (!hasValidCookie(cookies) && (uri.startsWith("/v1/"))) {
+      resp.setStatus(401);
       return;
     }
     resp.sendRedirect("/login");
@@ -64,4 +69,5 @@ public class SecurityFilter implements Filter {
     }
     return false;
   }
+
 }

@@ -13,8 +13,8 @@ import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 /**
  * @author Martin Milev <martinmariusmilev@gmail.com>
@@ -57,6 +57,25 @@ public class SecurityFilterTest {
     request.setRequestURI("/");
 
     filter.doFilter(request, response, chain);
+
     assertThat(response.getRedirect(), is("/login"));
+  }
+
+  @Test
+  public void expiredSession() throws Exception {
+    SecurityFilter filter = new SecurityFilter(sessionRepository);
+    request.addCookie(new Cookie("SID", ":: any id ::"));
+    request.setRequestURI("/v1/");
+
+    context.checking(new Expectations() {{
+      oneOf(sessionRepository).findSessionAvailableAt(with(any(String.class)), with(any(LocalDateTime.class)));
+      will(returnValue(Optional.empty()));
+      oneOf(sessionRepository).findSessionAvailableAt(with(any(String.class)), with(any(LocalDateTime.class)));
+      will(returnValue(Optional.empty()));
+    }});
+
+    filter.doFilter(request, response, chain);
+
+    assertThat(response.getStatus(), is(401));
   }
 }

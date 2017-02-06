@@ -19,10 +19,8 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		return {
 			'responseError': function(rejection) {
 			  if (rejection.status == 401) {
-					if ($location.url() !== '/login') {
-						$location.url('/login');
-					}
-				}
+          window.location.href = "/login";
+        }
 			}
 		};
 	});
