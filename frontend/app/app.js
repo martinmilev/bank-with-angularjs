@@ -1,6 +1,6 @@
 var app = angular.module('bankApp', ['ngRoute']);
 
-app.config(function ($routeProvider, $locationProvider) {
+app.config(function ($routeProvider, $locationProvider, $httpProvider) {
   $routeProvider
 
           .when('/', {
@@ -13,7 +13,19 @@ app.config(function ($routeProvider, $locationProvider) {
             redirectTo: '/'
           });
 
-  $locationProvider.html5Mode(true);
+  $locationProvider.html5Mode(true).hashPrefix('*');
+
+	$httpProvider.interceptors.push(function($q, $location) {
+		return {
+			'responseError': function(rejection) {
+			  if (rejection.status == 401) {
+					if ($location.url() !== '/login') {
+						$location.url('/login');
+					}
+				}
+			}
+		};
+	});
 });
 
 app.controller('TransactionsHistoryCtrl', function($scope, $http) {

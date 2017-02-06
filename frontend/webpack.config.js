@@ -8,6 +8,7 @@ var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
 var env = process.env.NODE_ENV || 'development'
 const __PROD__ = env === 'production'
+const __DEV__  = env === 'development'
 
 const webpackConfig = {
   watch: true,
@@ -22,6 +23,13 @@ const webpackConfig = {
     ]
   },
   module: {}
+}
+
+if (__DEV__) {
+  webpackConfig.entry.app = './index.dev.js'
+}
+if (__PROD__) {
+  webpackConfig.watch = false
 }
 
 //Output
@@ -48,6 +56,14 @@ webpackConfig.plugins = [
     }
   ]),
 ]
+if (__DEV__) {
+  webpackConfig.plugins.push(new CopyWebpackPlugin([
+    {
+      from: './app/index.html',
+      to: '../index.html'
+    }
+  ]))
+}
 
 if (__PROD__) {
   webpackConfig.plugins.push(

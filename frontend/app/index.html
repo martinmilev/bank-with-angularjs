@@ -1,17 +1,34 @@
 <!DOCTYPE html>
-<html ng-app="bankAppTest">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/styles/style.css">
     <title>myBank</title>
     <base href="/">
 </head>
-<body>
-<div ng-view=""></div>
+<body ng-app="bankAppTest">
 
-<script src="assets/vendor.bundle.js"></script>
-<script src="assets/bank.bundle.js"></script>
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" ng-href="/">myBank</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a ng-href="/">HOME</a></li>
+                <li><a ng-href="history">TRANSACTION HISTORY</a></li>
+                <li ng-controller="LogoutCtrl"><a href="" ng-click="logout()" target="_self">LOGOUT</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div ng-view></div>
+
+<script src="/assets/vendor.bundle.js"></script>
+<script src="/assets/bank.bundle.js"></script>
 
 </body>
 </html>
