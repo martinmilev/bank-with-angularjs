@@ -1,17 +1,13 @@
 package com.clouway.bank;
 
 
-import com.clouway.bank.adapter.persistence.PersistentTransactionRepository;
-import com.clouway.bank.core.Account;
-
-import com.clouway.bank.adapter.persistence.PersistentAccountRepository;
-import com.google.inject.Provider;
+import com.clouway.bank.adapter.persistence.PersistentSessionRepository;
+import com.clouway.bank.core.SessionCleaner;
 import com.google.inject.util.Providers;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoException;
 import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoDatabase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +69,21 @@ public class BankBootstrap {
     Jetty jetty = new Jetty(httpPort, client);
     jetty.start();
 
+
+    //Cleaning Expired Sessions
+    SessionCleaner cleaner = new SessionCleaner(
+            new PersistentSessionRepository(Providers.of(client.getDatabase("bankApp"))),
+            300 //Every 5 minutes
+    );
+    cleaner.startAsync().awaitRunning();
+
     System.out.println(String.format("Bank is up and running on: %d", httpPort));
+
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      public void run() {
+        cleaner.stopAsync();
+        System.out.println("Bank is closing.");
+      }
+    });
   }
 }
