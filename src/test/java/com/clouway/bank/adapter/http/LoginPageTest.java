@@ -9,6 +9,7 @@ import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class LoginPageTest {
   public void loginAuthorisedUser() throws Exception {
     String name = "test";
     String pswd = "test";
-    Optional<User> user = Optional.of(new User("::any id::", name, pswd));
+    Optional<User> user = Optional.of(new User("::any id::", name, BCrypt.hashpw(pswd, BCrypt.gensalt())));
     request.setParameter("name", name);
     request.setParameter("password", pswd);
 
@@ -70,7 +71,7 @@ public class LoginPageTest {
   public void tryToLoginWithIncorrectPassword() throws Exception {
     String name = "test";
     String pswd = "test";
-    Optional<User> user = Optional.of(new User("::any id::", name, pswd));
+    Optional<User> user = Optional.of(new User("::any id::", name, BCrypt.hashpw(pswd, BCrypt.gensalt())));
     request.setParameter("name", "test");
     request.setParameter("password", "::any password::");
 
