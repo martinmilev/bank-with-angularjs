@@ -10,6 +10,7 @@ import com.google.sitebricks.At;
 import com.google.sitebricks.Show;
 import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.http.Post;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +48,7 @@ public class LoginPage {
       return null;
     }
 
-    if (!user.get().password.equals(password)) {
+    if (!BCrypt.checkpw(password, user.get().password)) {
       showErrorMessage = true;
       errorMessage = "Incorrect password.";
       return null;

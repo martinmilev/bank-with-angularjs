@@ -7,6 +7,7 @@ import com.google.sitebricks.At;
 import com.google.sitebricks.Show;
 import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.http.Post;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Optional;
 
@@ -38,6 +39,8 @@ public class RegisterPage {
       errorMessage = "Passwords should match.";
       return null;
     }
+
+    password = BCrypt.hashpw(password, BCrypt.gensalt());
 
     Optional<User> possibleUser = userRepository.findByUserName(name);
 

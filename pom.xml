@@ -267,6 +267,13 @@
       <version>3.4.1</version>
     </dependency>
 
+    <!--Password Security-->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-crypto</artifactId>
+      <version>3.1.0.RELEASE</version>
+    </dependency>
+
     <!-- Testing Libraries -->
     <dependency>
       <groupId>junit</groupId>
@@ -305,8 +312,6 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
     </dependency>
-
-
   </dependencies>
 
 </project>
