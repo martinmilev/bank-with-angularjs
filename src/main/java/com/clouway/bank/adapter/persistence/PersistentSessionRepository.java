@@ -77,10 +77,6 @@ public class PersistentSessionRepository implements SessionRepository {
     Document document = db.get().getCollection("sessions")
             .find(new Document("sessionOwner", currentUser.name)).first();
 
-    if (document == null) {
-        return true;
-    } else {
-        return false;
-    }
+    return document == null;
   }
 }
