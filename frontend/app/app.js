@@ -9,6 +9,9 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
           .when('/history', {
             templateUrl: 'view/transaction_history_page.view.html'
           })
+          .when('/passchange', {
+            templateUrl: 'view/password_change_page.view.html'
+          })
           .otherwise({
             redirectTo: '/'
           });
@@ -19,8 +22,10 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		return {
 			'responseError': function(rejection) {
 			  if (rejection.status == 401) {
-          window.location.href = "/login";
-        }
+                window.location.href = "/login";
+              } else {
+                return $q.reject(rejection);
+              }
 			}
 		};
 	});
@@ -97,4 +102,34 @@ app.controller('LogoutCtrl', function ($scope, $http) {
       window.location = '/login';
     });
   }
+});
+
+app.controller('ChangePasswordCtrl', function ($scope, $http) {
+  $scope.message = {};
+  $scope.message.success = "";
+  $scope.message.failure = "";
+
+  $scope.changePassword = function(oldPassword, newPassword, validateNewPassword) {
+
+    if (newPassword === validateNewPassword) {
+
+      $scope.query = {};
+      $scope.query.oldPass = oldPassword;
+      $scope.query.newPass = newPassword;
+
+      $http.post("/v1/useraccount/changePassword", $scope.query).then(function successCallback(response) {
+        $scope.message.success = "Password changed successfully!!!";
+        $scope.message.failure = "";
+      }, function errorCallback(failure) {
+        $scope.message.failure = "Incorrect old password!!!";
+        $scope.message.success = "";
+        return;
+      });
+    } else {
+      $scope.message.failure = "New password doesn't match the one in the validation field!!!";
+      $scope.message.success = "";
+    }
+
+  }
+
 });

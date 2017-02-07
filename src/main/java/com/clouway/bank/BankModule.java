@@ -65,6 +65,7 @@ public class BankModule extends SitebricksModule {
     at("/v1/operation").serve(OperationsService.class);
     at("/v1/transactions").serve(TransactionHistoryService.class);
     at("/logout").serve(LogoutService.class);
+    at("/v1/useraccount/changePassword").serve(UserPasswordChangingService.class);
 
     bind(UserSecurity.class).to(UserSecurityImpl.class);
     bind(UserRepository.class).to(PersistentAccountRepository.class);

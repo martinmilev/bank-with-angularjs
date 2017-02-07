@@ -80,6 +80,11 @@ public class PersistentAccountRepository implements UserRepository, AccountRepos
             findOneAndUpdate(new Document("_id", new ObjectId(id)), new Document("$set", new Document("balance", amount)));
   }
 
+  @Override
+  public void updatePassword(String id, String password) {
+    accounts().findOneAndUpdate(new Document("_id", new ObjectId(id)), new Document("$set", new Document("password", password)));
+  }
+
   private MongoCollection<Document> accounts() {
     return db.get().getCollection("accounts");
   }

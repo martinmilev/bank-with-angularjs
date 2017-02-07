@@ -85,4 +85,13 @@ public class PersistentAccountRepositoryTest {
 
     assertThat(balance, is(5d));
   }
+
+  @Test
+  public void changePassword() {
+    User user = accountRepository.register("John", "password");
+    accountRepository.updatePassword(user.id, "newPassword");
+    user = accountRepository.findByUserName(user.name).get();
+
+    assertTrue(user.password.equals("newPassword"));
+  }
 }

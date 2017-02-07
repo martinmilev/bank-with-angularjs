@@ -4,6 +4,8 @@ describe('Routing', function () {
   it('Should map routes to controllers', function () {
     inject(function ($route) {
       expect($route.routes['/'].templateUrl).toEqual('view/index_page.view.html');
+      expect($route.routes['/history'].templateUrl).toEqual('view/transaction_history_page.view.html');
+      expect($route.routes['/passchange'].templateUrl).toEqual('view/password_change_page.view.html');
       expect($route.routes[null].redirectTo).toEqual('/');
     });
   });
@@ -245,5 +247,58 @@ describe('LogoutCtrl', function () {
     $scope.logout();
 
     $httpBackend.flush();
+  }));
+});
+
+describe('ChangePasswordCtrl', function () {
+  beforeEach(angular.mock.module('bankApp'));
+    var $controller;
+    var $httpBackend;
+
+  beforeEach(inject(function (_$controller_, _$httpBackend_) {
+    $controller = _$controller_;
+    $httpBackend = _$httpBackend_;
+  }));
+
+  it('Should change password', inject(function ($http) {
+    var $scope = {};
+    $controller('ChangePasswordCtrl', {$scope: $scope, $http: $http});
+
+    $httpBackend
+            .expect('POST', '/v1/useraccount/changePassword')
+            .respond(200);
+
+    $scope.changePassword('oldPassword', 'newPassword', 'newPassword');
+
+    $httpBackend.flush();
+
+    expect($scope.message.success).toEqual("Password changed successfully!!!");
+    expect($scope.message.failure).toEqual("");
+  }));
+
+  it('Wrong old password', inject(function ($http) {
+    var $scope = {};
+    $controller('ChangePasswordCtrl', {$scope: $scope, $http: $http});
+
+    $httpBackend
+            .expect('POST', '/v1/useraccount/changePassword')
+            .respond(400);
+
+    $scope.changePassword('wrongOldPassword', 'newPassword', 'newPassword');
+
+    $httpBackend.flush();
+
+    expect($scope.message.success).toEqual("");
+    expect($scope.message.failure).toEqual("Incorrect old password!!!");
+  }));
+
+  it('New password and its validation wont match', inject(function ($http) {
+    var $scope = {};
+    $controller('ChangePasswordCtrl', {$scope: $scope, $http: $http});
+
+    $scope.changePassword('oldPassword', 'newPassword', 'wrongPassword');
+
+    expect($scope.message.success).toEqual("");
+    expect($scope.message.failure).toEqual("New password doesn't match the one in the validation field!!!");
   }));
 });
