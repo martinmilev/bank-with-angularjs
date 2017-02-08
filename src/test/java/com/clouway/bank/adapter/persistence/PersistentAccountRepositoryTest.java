@@ -3,21 +3,19 @@ package com.clouway.bank.adapter.persistence;
 import com.clouway.bank.core.Account;
 import com.clouway.bank.core.Transaction;
 import com.clouway.bank.core.TransactionRepository;
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
 import com.clouway.bank.core.User;
 import com.clouway.bank.matchers.DatastoreRule;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 /**
@@ -79,7 +77,7 @@ public class PersistentAccountRepositoryTest {
               with(any(Transaction.class)));
     }});
 
-    accountRepository.update(user.id, 5d, "withdraw", "5");
+    accountRepository.update(user.id, 5d, "withdraw", 5d);
 
     Double balance = accountRepository.findAccountByID(user.id).get().balance;
 

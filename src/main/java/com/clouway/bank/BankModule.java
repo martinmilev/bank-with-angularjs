@@ -5,10 +5,12 @@ import com.clouway.bank.adapter.persistence.PersistentAccountRepository;
 import com.clouway.bank.adapter.persistence.PersistentSessionRepository;
 import com.clouway.bank.adapter.persistence.PersistentTransactionRepository;
 import com.clouway.bank.core.AccountRepository;
+import com.clouway.bank.core.CurrencyConverter;
 import com.clouway.bank.core.SessionRepository;
 import com.clouway.bank.core.TransactionRepository;
 import com.clouway.bank.core.UserRepository;
 import com.clouway.bank.core.UserSecurity;
+import com.clouway.bank.adapter.http.YahooCurrencyConverter;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -62,16 +64,18 @@ public class BankModule extends SitebricksModule {
     at("/login").show(LoginPage.class);
     at("/register").show(RegisterPage.class);
     at("/v1/useraccount").serve(HomePageService.class);
+    at("/v1/exchangerates").serve(ExchangeRatesService.class);
     at("/v1/operation").serve(OperationsService.class);
     at("/v1/transactions").serve(TransactionHistoryService.class);
-    at("/logout").serve(LogoutService.class);
     at("/v1/useraccount/changePassword").serve(UserPasswordChangingService.class);
+    at("/logout").serve(LogoutService.class);
 
     bind(UserSecurity.class).to(UserSecurityImpl.class);
     bind(UserRepository.class).to(PersistentAccountRepository.class);
     bind(AccountRepository.class).to(PersistentAccountRepository.class);
     bind(SessionRepository.class).to(PersistentSessionRepository.class);
     bind(TransactionRepository.class).to(PersistentTransactionRepository.class);
+    bind(CurrencyConverter.class).to(YahooCurrencyConverter.class);
   }
 
   @Provides

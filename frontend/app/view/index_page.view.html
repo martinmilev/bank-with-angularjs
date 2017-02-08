@@ -1,5 +1,5 @@
-<div class="container col-md-8 col-md-offset-2" ng-controller="HomePageCtrl">
-    <ul class="list-group text-muted h4">
+<div ng-controller="HomePageCtrl">
+    <ul class="container col-md-6 col-md-offset-2 list-group text-muted h4">
         <li class="list-group-item">
             <div class="user-info-block">
                 <p class="h3"><span class="glyphicon glyphicon-user"></span> {{ account.name }}
@@ -20,7 +20,7 @@
                             <input type="radio" ng-model="operation.type" value="deposit">
                             <span class="glyphicon glyphicon glyphicon-plus-sign"></span>
                         </label>
-                        <label class="pull-right text-danger ">
+                        <label class="pull-right text-danger">
                             <span class="glyphicon glyphicon-minus-sign"></span>
                             <input type="radio" ng-model="operation.type" value="withdraw">
                             Withdraw
@@ -30,9 +30,26 @@
                 <div class="form-group">
                     <div>
                         <div class="input-group col-md-8 col-md-offset-2">
-                            <input class="form-control" type="number" step="0.01" min="0"
-                                   placeholder="0.00" ng-model="operation.amount" required>
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-bitcoin"></span></span>
+                            <div class="input-group-btn" id="currencyList">
+                                <button type="button" class="btn btn-default btn-secondary dropdown-toggle"
+                                        ng-disabled=exchangerates.status data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-menu-hamburger"></span> Currency
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="" ng-click="operation.currency = 'bitcoin'"><span
+                                            class="glyphicon glyphicon-bitcoin"></span> Bitcoin</a></li>
+                                    <li><a href="" ng-click="operation.currency = 'EUR'"><span
+                                            class="glyphicon glyphicon-euro"></span> Euro</a></li>
+                                    <li><a href="" ng-click="operation.currency = 'USD'"><span
+                                            class="glyphicon glyphicon-usd"></span> USD</a></li>
+                                    <li><a href="" ng-click="operation.currency = 'GBP'"><span
+                                            class="glyphicon glyphicon-gbp"></span> GBP</a></li>
+                                </ul>
+                            </div>
+                            <input class="form-control" type="number" step="0.0001" min="0"
+                                   placeholder="0.0000" ng-model="operation.amount" required>
+                            <span class="input-group-addon"><span
+                                    class="glyphicon glyphicon-{{operation.currency.toLowerCase()}}"></span></span>
                         </div>
                     </div>
                 </div>
@@ -47,4 +64,25 @@
             </form>
         </li>
     </ul>
+    <div class="container col-md-2 col-md-offset-0 list-group text-muted h4">
+        <table class="table .table-hover">
+            <tr>
+                <td colspan="2">
+                    <p>
+                        Exchange Rates for 1
+                        <span class="glyphicon glyphicon-bitcoin"></span>
+                    </p>
+                    <p class="text-danger">{{exchangerates.error}}</p>
+                </td>
+            </tr>
+            <tr ng-repeat="rate in exchangerates">
+                <td>
+                    {{rate.currency}}
+                </td>
+                <td class="pull-right">
+                    {{rate.value}} <span class="glyphicon glyphicon-{{rate.currency.toLowerCase()}}"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

@@ -9,7 +9,8 @@ public interface AccountRepository {
 
   Optional<Account> findAccountByID(String id);
 
-  void update(String id, Double amount, String operationType, String operationAmount);
-
   void updatePassword(String id, String password);
+
+  void update(String id, Double amount, String operationType, Double operationAmount);
+
 }

@@ -19,7 +19,7 @@ import java.util.Optional;
 @At("/v1/useraccount")
 public class HomePageService {
   private final AccountRepository accountRepository;
-  private UserSecurity userSecurity;
+  private final UserSecurity userSecurity;
 
   @Inject
   public HomePageService(AccountRepository accountRepository, UserSecurity userSecurity) {

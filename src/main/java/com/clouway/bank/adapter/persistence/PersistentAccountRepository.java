@@ -67,13 +67,13 @@ public class PersistentAccountRepository implements UserRepository, AccountRepos
   }
 
   @Override
-  public void update(String id, Double amount, String operationType, String operationAmount) {
+  public void update(String id, Double amount, String operationType, Double operationAmount) {
     transactionRepository.registerTransaction(new Transaction(
             null,
             Date.from(Instant.now()),
             id,
             operationType,
-            Double.valueOf(operationAmount)
+            operationAmount
     ));
 
     accounts().

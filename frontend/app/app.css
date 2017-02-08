@@ -32,3 +32,12 @@
     background: #517496;
     color: #f9f9f9;
 }
+
+#currencyList li {
+    padding: 4px;
+    font-size: larger;
+}
+
+#currencyList li:hover {
+    text-decoration: underline;
+}

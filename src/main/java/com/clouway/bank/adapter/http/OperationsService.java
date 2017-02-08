@@ -1,6 +1,11 @@
 package com.clouway.bank.adapter.http;
 
-import com.clouway.bank.core.*;
+import com.clouway.bank.core.Account;
+import com.clouway.bank.core.AccountRepository;
+import com.clouway.bank.core.CurrenciesNotAvailableException;
+import com.clouway.bank.core.CurrencyConverter;
+import com.clouway.bank.core.User;
+import com.clouway.bank.core.UserSecurity;
 import com.google.inject.Inject;
 import com.google.sitebricks.At;
 import com.google.sitebricks.headless.Reply;
@@ -8,6 +13,7 @@ import com.google.sitebricks.headless.Request;
 import com.google.sitebricks.headless.Service;
 import com.google.sitebricks.http.Post;
 
+import java.text.DecimalFormat;
 import java.util.Optional;
 
 /**
@@ -17,14 +23,14 @@ import java.util.Optional;
 @At("/v1/operation")
 public class OperationsService {
   private final AccountRepository accountRepository;
-  private final TransactionRepository transactionRepository;
-  private UserSecurity userSecurity;
+  private final UserSecurity userSecurity;
+  private final CurrencyConverter converter;
 
   @Inject
-  public OperationsService(AccountRepository accountRepository, TransactionRepository transactionRepository, UserSecurity userSecurity) {
+  public OperationsService(AccountRepository accountRepository, UserSecurity userSecurity, CurrencyConverter converter) {
     this.accountRepository = accountRepository;
-    this.transactionRepository = transactionRepository;
     this.userSecurity = userSecurity;
+    this.converter = converter;
   }
 
   @Post
@@ -39,23 +45,36 @@ public class OperationsService {
     Optional<Account> possibleAccount = accountRepository.findAccountByID(possibleUser.get().id);
 
     Account account = possibleAccount.get();
-    Double requestedAmount = Double.valueOf(operation.amount);
+    Double requestedAmount = 0d;
     Double newBalance = 0d;
+    DecimalFormat formater = new DecimalFormat(".####");
+
+    try {
+      if(operation.currency.equals("bitcoin")) {
+        requestedAmount =  Double.valueOf(operation.amount);
+      } else {
+        requestedAmount = converter.convert(operation.currency, "BTC", Double.valueOf(operation.amount));
+      }
+    } catch (CurrenciesNotAvailableException e) {
+      return Reply.saying().status(503);
+    }
 
     if (account.balance < requestedAmount && operation.type.equals("withdraw")) {
       return Reply.saying().badRequest();
     }
+
     switch (operation.type) {
       case "deposit":
-        newBalance = account.balance + Double.valueOf(operation.amount);
-        accountRepository.update(account.id, newBalance, operation.type, operation.amount);
+        newBalance = account.balance + requestedAmount;
+        newBalance = Double.valueOf(formater.format(newBalance));
+        accountRepository.update(account.id, newBalance, operation.type, requestedAmount);
         break;
       case "withdraw":
-        newBalance = account.balance - Double.valueOf(operation.amount);
-        accountRepository.update(account.id, newBalance, operation.type, operation.amount);
+        newBalance = account.balance - requestedAmount;
+        newBalance = Double.valueOf(formater.format(newBalance));
+        accountRepository.update(account.id, newBalance, operation.type, requestedAmount);
         break;
     }
-
     return Reply.with(new DepositResult(newBalance)).as(Json.class);
   }
 
@@ -70,13 +89,15 @@ public class OperationsService {
   public static class Operation {
     private String amount;
     private String type;
+    private String currency;
 
-    public Operation() {
-    }
-
-    public Operation(String amount, String type) {
+    public Operation(String amount, String type, String currency) {
       this.type = type;
       this.amount = amount;
+      this.currency = currency;
+    }
+
+    public Operation() {
     }
 
     public String getType() {
@@ -93,6 +114,14 @@ public class OperationsService {
 
     public void setAmount(String amount) {
       this.amount = amount;
+    }
+
+    public String getCurrency() {
+      return currency;
+    }
+
+    public void setCurrency(String currency) {
+      this.currency = currency;
     }
   }
 }

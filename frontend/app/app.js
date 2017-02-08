@@ -72,11 +72,21 @@ app.controller('TransactionsHistoryCtrl', function($scope, $http) {
 
 app.controller('HomePageCtrl', function($scope, $http) {
   $scope.account = {};
-  $scope.operation = {type: "deposit"};
+  $scope.exchangerates = {};
+  $scope.operation = {type: "deposit", currency: "bitcoin"};
 
   $http.get("/v1/useraccount")
     .then(function(response) {
       $scope.account = response.data;
+  });
+
+  $http.get("/v1/exchangerates")
+    .then(function(response) {
+      $scope.exchangerates = response.data;
+      $scope.exchangerates.status = false;
+    }, function (error) {
+      $scope.exchangerates.error = "Currently unavailable.";
+      $scope.exchangerates.status = true;
   });
 
   $scope.executeOperation = function (operation) {
@@ -85,10 +95,26 @@ app.controller('HomePageCtrl', function($scope, $http) {
       $scope.account.balance = response.data.balance;
       $scope.message.success = "Operation completed successfully: ";
     }, function (error) {
-      $scope.message.error = "Insufficient amount in your account: ";
+      if (error.status == 400) {
+        $scope.message.error = "Insufficient amount in your account: ";
+      }
+      if(error.status == 503) {
+        $scope.message.error = "Unsuccessful currency conversion.";
+      }
       return;
     });
-  }
+  };
+
+  $scope.refreshTable = function () {
+    $http.get("/v1/exchangerates")
+      .then(function(response) {
+        $scope.exchangerates = response.data;
+        $scope.exchangerates.status = false;
+      }, function (error) {
+        $scope.exchangerates.error = "Currently unavailable.";
+        $scope.exchangerates.status = true;
+      });
+  };
 
   $scope.closeAlert = function (index) {
     $scope.alerts.splice(index, 1);
@@ -129,7 +155,5 @@ app.controller('ChangePasswordCtrl', function ($scope, $http) {
       $scope.message.failure = "New password doesn't match the one in the validation field!!!";
       $scope.message.success = "";
     }
-
   }
-
 });
