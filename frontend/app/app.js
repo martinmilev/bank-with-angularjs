@@ -95,11 +95,11 @@ app.controller('HomePageCtrl', function($scope, $http) {
   };
 });
 
-app.controller('LogoutCtrl', function ($scope, $http) {
+app.controller('LogoutCtrl', function ($scope, $http, $location) {
 
   $scope.logout = function() {
     $http.get("/logout").then( function (response) {
-      window.location = '/login';
+      $location.path("/logout");
     });
   }
 });

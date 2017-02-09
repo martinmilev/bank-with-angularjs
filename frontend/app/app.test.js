@@ -28,5 +28,6 @@ app.run(function($httpBackend) {
   $httpBackend.whenGET(regPath).passThrough();
   $httpBackend.whenGET('/v1/useraccount').respond({id: "123445", name: "John", balance: 23});
   $httpBackend.whenPOST('/v1/useraccount/changePassword').respond(200);
+  $httpBackend.whenGET('/logout').respond(200);
   // $httpBackend.whenGET('/v1/useraccount').respond(401, '');
 });
